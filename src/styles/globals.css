@@ -20,3 +20,13 @@ body {
   color: #e7e8e8;
   background: #070707;
 }
+
+
+.heading, .projects{
+  padding-bottom: 120px;
+}
+
+.form-heading{
+  padding-top: 150px;
+  padding-bottom: 70px;
+}

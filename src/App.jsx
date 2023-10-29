@@ -1,99 +1,47 @@
-import { ConnectWallet } from "@thirdweb-dev/react";
-import "./styles/Home.css";
+// import { ConnectWallet } from "@thirdweb-dev/react";
+// import "./styles/Home.css";
+import React, { useState, useEffect } from 'react'
+import Navbar from "./components/Navbar";
+import { Route, Routes } from 'react-router-dom';
+import CreateCampaign from "./pages/createCampaign";
+import { useStateContext } from "./context"
+import Landingpage from './pages/Landingpage';
+import Singleproject from './components/Singleproject';
+import Aos from 'aos';
+import 'aos/dist/aos.css'
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [campaigns, setCampaigns] = useState([]);
+
+  const { address, contract, getProjects } = useStateContext();
+
+  const fetchProjects = async () => {
+    setIsLoading(true);
+    const data = await getProjects();
+    setCampaigns(data);
+    setIsLoading(false);
+  }
+
+  useEffect(() => {
+    if(contract) fetchProjects();
+  }, [address, contract]);
+
+
+  useEffect(() => {
+    Aos.init({duration: 2000});
+  }, [])
+
   return (
     <main className="main">
-      <div className="container">
-        <div className="header">
-          <h1 className="title">
-            Welcome to{" "}
-            <span className="gradient-text-0">
-              <a
-                href="https://thirdweb.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                thirdweb.
-              </a>
-            </span>
-          </h1>
 
-          <p className="description">
-            Get started by configuring your desired network in{" "}
-            <code className="code">src/index.js</code>, then modify the{" "}
-            <code className="code">src/App.js</code> file!
-          </p>
-
-          <div className="connect">
-            <ConnectWallet
-              dropdownPosition={{
-                side: "bottom",
-                align: "center",
-              }}
-            />
-          </div>
-        </div>
-
-        <div className="grid">
-          <a
-            href="https://portal.thirdweb.com/"
-            className="card"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              src="/images/portal-preview.png"
-              alt="Placeholder preview of starter"
-            />
-            <div className="card-text">
-              <h2 className="gradient-text-1">Portal ➜</h2>
-              <p>
-                Guides, references, and resources that will help you build with
-                thirdweb.
-              </p>
-            </div>
-          </a>
-
-          <a
-            href="https://thirdweb.com/dashboard"
-            className="card"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              src="/images/dashboard-preview.png"
-              alt="Placeholder preview of starter"
-            />
-            <div className="card-text">
-              <h2 className="gradient-text-2">Dashboard ➜</h2>
-              <p>
-                Deploy, configure, and manage your smart contracts from the
-                dashboard.
-              </p>
-            </div>
-          </a>
-
-          <a
-            href="https://thirdweb.com/templates"
-            className="card"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              src="/images/templates-preview.png"
-              alt="Placeholder preview of templates"
-            />
-            <div className="card-text">
-              <h2 className="gradient-text-3">Templates ➜</h2>
-              <p>
-                Discover and clone template projects showcasing thirdweb
-                features.
-              </p>
-            </div>
-          </a>
-        </div>
-      </div>
+      <Navbar/>
+      <Routes>
+      <Route path="/create" element={<CreateCampaign />} />
+      <Route path="/project" element={<Singleproject />} />
+      <Route path="/" element={<Landingpage />} />
+      </Routes>
+      
     </main>
   );
 }
